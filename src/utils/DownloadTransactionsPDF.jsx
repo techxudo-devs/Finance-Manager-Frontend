@@ -38,23 +38,27 @@ const DownloadTransactionsPDF = (transactions, category, dateFilter, customRange
     doc.setTextColor(...colors.text);
     doc.text("Transaction Report", 14, 25);
 
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(10);
+    doc.setTextColor(...colors.primary);
+    doc.text("POWERED BY TECHXUDO", 14, 32);
+
     // Subtitle line
     doc.setDrawColor(...colors.primary);
     doc.setLineWidth(0.5);
-    doc.line(14, 30, 80, 30);
+    doc.line(14, 36, 80, 36);
 
-    // Date metadata with icon-like prefix
+    // Date metadata
     doc.setFontSize(10);
     doc.setFont("helvetica", "normal");
     doc.setTextColor(...colors.textLight);
-    doc.text("●", 14, 40);
-    doc.text(`Generated: ${new Date().toLocaleDateString('en-US', {
+    doc.text(`Generated on: ${new Date().toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'short',
         day: 'numeric',
         hour: '2-digit',
         minute: '2-digit'
-    })}`, 18, 40);
+    })}`, 14, 45);
 
     // Filter badges with modern card-like design
     doc.setFontSize(9);
@@ -62,12 +66,12 @@ const DownloadTransactionsPDF = (transactions, category, dateFilter, customRange
 
     // Category badge
     doc.setFillColor(...colors.primary);
-    doc.roundedRect(14, 46, 45, 7, 2, 2, 'F');
+    doc.roundedRect(14, 51, 45, 7, 2, 2, 'F');
     doc.setTextColor(255, 255, 255);
-    doc.text("CATEGORY", 16, 50.5);
+    doc.text("CATEGORY", 16, 55.5);
     doc.setFont("helvetica", "normal");
     doc.setTextColor(...colors.text);
-    doc.text(category, 62, 50.5);
+    doc.text(category, 62, 55.5);
 
     // Date filter badge
     let dateText = dateFilter;
@@ -75,13 +79,13 @@ const DownloadTransactionsPDF = (transactions, category, dateFilter, customRange
         dateText = `${customRange.from} to ${customRange.to}`;
     }
     doc.setFillColor(...colors.secondary);
-    doc.roundedRect(14, 55, 35, 7, 2, 2, 'F');
+    doc.roundedRect(14, 60, 35, 7, 2, 2, 'F');
     doc.setFont("helvetica", "bold");
     doc.setTextColor(255, 255, 255);
-    doc.text("PERIOD", 16, 59.5);
+    doc.text("PERIOD", 16, 64.5);
     doc.setFont("helvetica", "normal");
     doc.setTextColor(...colors.text);
-    doc.text(dateText, 52, 59.5);
+    doc.text(dateText, 52, 64.5);
 
     // Calculate summary stats
     const totalIncome = transactions
@@ -92,7 +96,7 @@ const DownloadTransactionsPDF = (transactions, category, dateFilter, customRange
         .reduce((sum, t) => sum + parseFloat(t.amount), 0);
 
     // Summary cards
-    const cardY = 68;
+    const cardY = 73;
     const cardWidth = 60;
     const cardHeight = 18;
 
@@ -148,7 +152,7 @@ const DownloadTransactionsPDF = (transactions, category, dateFilter, customRange
 
     // Modern table with enhanced styling
     autoTable(doc, {
-        startY: 92,
+        startY: 97,
         head: [["#", "Title", "Category", "Type", "Amount", "Date", "Description"]],
         body: tableData,
         theme: 'plain',
