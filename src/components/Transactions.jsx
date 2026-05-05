@@ -330,6 +330,7 @@ const Transactions = () => {
     },
   ];
 
+  
   const customStyles = { headCells: { style: { fontSize: "14px", fontWeight: "500", fontFamily: "Poppins", color: "#5759C7", textTransform: "uppercase" } } };
   const categories = ["All", "Food", "Rent", "Shopping", "Salary", "Investment", "Other"];
   const dateFilters = ["Entire", "Today", "Last Week", "This Month", "Last Month", "Last 3 Months", "This Year"];
