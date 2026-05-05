@@ -65,9 +65,22 @@ const UsersInRecipients = () => {
         onError: (err) => toast.error(err.response?.data?.message || "Failed to remove connection"),
     });
 
-    const { mutate: resendInviteMutate, isPending: isResendingInvite, variables: resendingInviteEmail } = useMutation({
+    const { mutate: resendInviteMutate, isPending: isResendingInvite, variables: resendingInviteTarget } = useMutation({
         mutationFn: resendInvite,
-        onSuccess: (data) => toast.success("Invite resent successfully!"),
+        onSuccess: (data) => {
+            const whatsappLinks = data.results
+                ?.filter((result) => result.whatsappUrl)
+                .map((result) => result.whatsappUrl) || [];
+
+            whatsappLinks.forEach((url) => {
+                const popup = window.open(url, "_blank", "noopener,noreferrer");
+                if (!popup) {
+                    toast.error("Allow pop-ups to open the WhatsApp invitation.");
+                }
+            });
+
+            toast.success("Invite resent successfully!");
+        },
         onError: (err) => toast.error("Failed to resend invite."),
     });
 
@@ -238,7 +251,8 @@ const UsersInRecipients = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                 {filteredUsers.length > 0 ? (
                     filteredUsers.map((user) => {
-                        const isCurrentlyResendingInvite = isResendingInvite && resendingInviteEmail === user.email;
+                        const isCurrentlyResendingInvite = isResendingInvite
+                            && resendingInviteTarget?.contact === (user.contact || user.email);
                         const isCurrentlyResendingConnection = isResendingConnection && resendingUserEmail === user.email;
                         const isThisCardResending = isCurrentlyResendingInvite || isCurrentlyResendingConnection;
 
@@ -288,7 +302,12 @@ const UsersInRecipients = () => {
                                             <button
                                                 onClick={() => {
                                                     if (user.connectionStatus === 'Pending (Unregistered)') {
-                                                        resendInviteMutate(user.email);
+                                                        resendInviteMutate({
+                                                            channel: user.channel || "email",
+                                                            email: user.channel === "email" ? user.email : undefined,
+                                                            phone: user.channel === "whatsapp" ? user.phone : undefined,
+                                                            contact: user.contact || user.email,
+                                                        });
                                                     } else {
                                                         resendConnectionMutate(user.email);
                                                     }

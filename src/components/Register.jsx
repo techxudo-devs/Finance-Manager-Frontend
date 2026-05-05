@@ -15,15 +15,13 @@ const Register = () => {
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
 
-    // Correctly get the token from the URL search parameters.
     const inviteTokenFromUrl = searchParams.get('token') || '';
-    console.log(inviteTokenFromUrl, "token")
     const API_URL = import.meta.env.VITE_API_URL;
+    const [prefilledInviteEmail, setPrefilledInviteEmail] = useState("");
 
-    // Initialize Formik with the token from the URL.
     const initialValues = {
         name: '',
-        email: '',
+        email: prefilledInviteEmail,
         password: '',
         inviteToken: inviteTokenFromUrl,
     };
@@ -35,7 +33,6 @@ const Register = () => {
     });
 
     const handleSubmit = async (values) => {
-        console.log(values)
         setLoading(true);
         try {
             const formData = new FormData();
@@ -95,17 +92,22 @@ const Register = () => {
                         useEffect(() => {
                             if (inviteTokenFromUrl) {
                                 try {
-                                    // Token ko decode karke email nikalein
                                     const decodedToken = jwtDecode(inviteTokenFromUrl);
                                     if (decodedToken.email) {
-                                        // Formik ki 'email' field ko update karein
+                                        setPrefilledInviteEmail(decodedToken.email);
                                         setFieldValue('email', decodedToken.email);
+                                    } else {
+                                        setPrefilledInviteEmail("");
+                                        setFieldValue('email', "");
                                     }
                                 } catch (error) {
                                     console.error("Invalid token:", error);
                                     toast.error("The invite link is invalid or has expired.");
-                                    navigate("/register"); // Ghalat token per user ko normal register page per bhej dein
+                                    navigate("/register");
                                 }
+                            } else {
+                                setPrefilledInviteEmail("");
+                                setFieldValue('email', "");
                             }
                         }, [inviteTokenFromUrl, setFieldValue, navigate]);
 
@@ -120,9 +122,8 @@ const Register = () => {
                                 </div>
                                 <div className="flex flex-col">
                                     <label className="text-gray-700 p-medium mb-1">Email</label>
-                                    <Field type="email" name="email" placeholder="Enter your email" readOnly={!!inviteTokenFromUrl}
-                                        // disabled={loading || inviteTokenFromUrl} 
-                                        className={`w-full px-3 py-2 border rounded-lg outline-none p-regular text-sm sm:text-base ${errors.email && touched.email ? 'border-red-500' : 'border-[#6667DD]'} ${inviteTokenFromUrl ? 'bg-gray-200 cursor-not-allowed' : ''}`} />
+                                    <Field type="email" name="email" placeholder="Enter your email" readOnly={!!prefilledInviteEmail}
+                                        className={`w-full px-3 py-2 border rounded-lg outline-none p-regular text-sm sm:text-base ${errors.email && touched.email ? 'border-red-500' : 'border-[#6667DD]'} ${prefilledInviteEmail ? 'bg-gray-200 cursor-not-allowed' : ''}`} />
                                     <ErrorMessage name="email" component="div" className="text-red-500 text-sm mt-1" />
                                 </div>
 

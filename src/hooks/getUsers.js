@@ -48,8 +48,12 @@ export const removeConnection = async (userId) => {
     return res.data;
 };
 
-export const resendInvite = async (email) => {
-    const res = await axios.post(`${API_URL}/api/invite`, { emails: [email] }, {
+export const resendInvite = async ({ channel, email, phone, contact }) => {
+    const payload = channel === "whatsapp"
+        ? { channel: "whatsapp", phoneNumbers: [phone || contact] }
+        : { channel: "email", emails: [email || contact] };
+
+    const res = await axios.post(`${API_URL}/api/invite`, payload, {
         headers: {
             ...getAuthHeaders(),
             "Content-Type": "application/json",
