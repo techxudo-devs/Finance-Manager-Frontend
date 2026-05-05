@@ -293,6 +293,19 @@ const Transactions = () => {
     }, 0);
   };
 
+  const handleSingleTransactionDownload = (transaction) => {
+    try {
+      DownloadTransactionsPDF(
+        [transaction],
+        transaction.category || "Other",
+        "Single Transaction",
+        { from: "", to: "" }
+      );
+    } catch {
+      toast.error("Failed to download transaction!");
+    }
+  };
+
   const columns = [
     { name: "Title", selector: "title", sortable: true, cell: row => <span>{row.title}</span>, width: "200px" },
     { name: "Category", selector: "category", sortable: true, cell: row => <span className={`p-regular px-2 py-1 rounded ${categoryColors[row.category] || "bg-gray-200"}`}>{row.category || "Other"}</span>, width: "130px" },
@@ -302,6 +315,19 @@ const Transactions = () => {
     { name: "Description", selector: "description", sortable: true, cell: row => <span className="p-regular text-gray-700 line-clamp-2">{row.description || "-"}</span>, width: "200px" },
     { name: "Image", selector: "imageUrl", cell: row => row.imageUrl ? <img loading="lazy" src={row.imageUrl} alt="txn" onClick={() => setSelectedImage(row.imageUrl)} className="w-12 h-12 sm:w-14 sm:h-14 rounded-lg object-cover cursor-pointer" /> : <span className="p-regular text-gray-500">No Image</span> },
     { name: "Action", cell: row => (<div className="flex items-center justify-center gap-2 w-[100px] sm:w-[120px]"><button onClick={() => { setTransactionToDelete(row._id); setIsDeleteModalOpen(true); }} className="bg-red-100 hover:bg-red-200 p-2 cursor-pointer rounded-full transition-all duration-300"><Trash2 size={16} className="sm:size-[18px] text-red-500" /></button><button onClick={() => handleOpenEditModal(row)} className="bg-blue-100 hover:bg-blue-200 p-2 cursor-pointer rounded-full transition-all duration-300"><SquarePen size={16} className="sm:size-[18px] text-blue-500" /></button></div>) },
+    {
+      name: "Download Transaction",
+      cell: row => (
+        <button
+          onClick={() => handleSingleTransactionDownload(row)}
+          className="flex items-center justify-center gap-2 rounded-lg bg-[#E0E2FD] px-3 py-2 text-xs text-[#4447AA] transition-all duration-300 hover:bg-[#C8CBFC] cursor-pointer p-medium"
+        >
+          <DownloadCloud size={14} />
+          Download Transaction
+        </button>
+      ),
+      width: "230px"
+    },
   ];
 
   const customStyles = { headCells: { style: { fontSize: "14px", fontWeight: "500", fontFamily: "Poppins", color: "#5759C7", textTransform: "uppercase" } } };
