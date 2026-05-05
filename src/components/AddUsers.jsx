@@ -80,12 +80,12 @@ const AddUsers = ({ onInviteSuccess }) => {
     };
 
     return (
-        <div className="flex justify-center items-center pt-6">
-            <div className="bg-[#F6F9FC] shadow-sm rounded-2xl px-3 py-6 sm:p-8 w-full max-w-xl h-[80vh] sm:h-fit overflow-y-auto">
-                <h2 className="text-xl sm:text-2xl p-bold text-[#6667DD] text-center pb-4">
+        <div className="flex justify-center items-center pt-2">
+            <div className="bg-[#F6F9FC] shadow-sm rounded-2xl px-3 py-6 sm:p-8 w-full max-w-xl max-h-[80vh] flex flex-col overflow-hidden">
+                <h2 className="text-xl sm:text-2xl p-bold text-[#6667DD] text-center pb-4 shrink-0">
                     Invite Friends to Your Finantic
                 </h2>
-                <div className="mb-6 border-b border-blue-200 pb-6">
+                <div className="mb-6 border-b border-blue-200 pb-6 shrink-0">
                     <div className="mb-4 grid grid-cols-2 gap-3">
                         <button
                             type="button"
@@ -176,9 +176,9 @@ const AddUsers = ({ onInviteSuccess }) => {
                 >
                     {({ values, errors, touched, isValid, dirty }) => {
                         return (
-                            <Form className="space-y-4">
+                            <Form className="flex flex-col overflow-hidden flex-1">
                                 {inviteMethod === "whatsapp" && (
-                                    <div className="flex flex-col">
+                                    <div className="flex flex-col shrink-0 mb-4">
                                         <label className="mb-1 text-sm p-medium text-gray-700">Country Code</label>
                                         <Field
                                             as="select"
@@ -202,33 +202,37 @@ const AddUsers = ({ onInviteSuccess }) => {
 
                                 <FieldArray name={inviteMethod === "email" ? "emails" : "phoneNumbers"}>
                                     {({ push }) => (
-                                        <>
-                                            {(inviteMethod === "email" ? values.emails : values.phoneNumbers).map((value, index) => (
-                                                <div key={index} className="flex flex-col">
-                                                    <Field
-                                                        type={inviteMethod === "email" ? "email" : "tel"}
-                                                        name={`${inviteMethod === "email" ? "emails" : "phoneNumbers"}.${index}`}
-                                                        placeholder={inviteMethod === "email" ? `Friend's Email ${index + 1}` : `WhatsApp Number ${index + 1}`}
-                                                        disabled={isPending}
-                                                        className={`p-regular w-full px-4 py-2 rounded-lg outline-none text-gray-700 text-sm sm:text-base disabled:bg-gray-100 disabled:text-gray-500 border-2 ${(inviteMethod === "email" ? errors.emails?.[index] && touched.emails?.[index] : errors.phoneNumbers?.[index] && touched.phoneNumbers?.[index])
-                                                            ? "border-red-500"
-                                                            : "border-[#6667DD]"
-                                                            }`}
-                                                    />
-                                                    {inviteMethod === "whatsapp" && (
-                                                        <p className="mt-1 text-xs text-gray-500 p-regular">
-                                                            Enter the number without the country prefix. Validation follows {getWhatsappCountry(values.countryCode).label}.
-                                                        </p>
-                                                    )}
-                                                    <ErrorMessage
-                                                        name={`${inviteMethod === "email" ? "emails" : "phoneNumbers"}.${index}`}
-                                                        component="div"
-                                                        className="text-red-500 text-sm mt-1 p-regular"
-                                                    />
-                                                </div>
-                                            ))}
+                                        <div className="flex flex-col flex-1 overflow-hidden">
+                                            {/* Scrollable Container for Inputs ONLY */}
+                                            <div className="flex-1 overflow-y-auto pr-2 space-y-4 custom-scrollbar">
+                                                {(inviteMethod === "email" ? values.emails : values.phoneNumbers).map((value, index) => (
+                                                    <div key={index} className="flex flex-col">
+                                                        <Field
+                                                            type={inviteMethod === "email" ? "email" : "tel"}
+                                                            name={`${inviteMethod === "email" ? "emails" : "phoneNumbers"}.${index}`}
+                                                            placeholder={inviteMethod === "email" ? `Friend's Email ${index + 1}` : `WhatsApp Number ${index + 1}`}
+                                                            disabled={isPending}
+                                                            className={`p-regular w-full px-4 py-2 rounded-lg outline-none text-gray-700 text-sm sm:text-base disabled:bg-gray-100 disabled:text-gray-500 border-2 ${(inviteMethod === "email" ? errors.emails?.[index] && touched.emails?.[index] : errors.phoneNumbers?.[index] && touched.phoneNumbers?.[index])
+                                                                ? "border-red-500"
+                                                                : "border-[#6667DD]"
+                                                                }`}
+                                                        />
+                                                        {inviteMethod === "whatsapp" && (
+                                                            <p className="mt-1 text-xs text-gray-500 p-regular">
+                                                                Enter the number without the country prefix.
+                                                            </p>
+                                                        )}
+                                                        <ErrorMessage
+                                                            name={`${inviteMethod === "email" ? "emails" : "phoneNumbers"}.${index}`}
+                                                            component="div"
+                                                            className="text-red-500 text-sm mt-1 p-regular"
+                                                        />
+                                                    </div>
+                                                ))}
+                                            </div>
 
-                                            <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+                                            {/* Action Buttons: Fixed outside the scrollable area */}
+                                            <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0 bg-[#F6F9FC] pt-2">
                                                 <button
                                                     type="button"
                                                     onClick={() => push("")}
@@ -246,20 +250,19 @@ const AddUsers = ({ onInviteSuccess }) => {
                                                         : "bg-green-500 hover:bg-green-600"
                                                         }`}
                                                 >
-                                                    <Send size={18} /> {isPending ? "Sending..." : inviteMethod === "email" ? "Send Invites" : "Send Invites"}
+                                                    <Send size={18} /> {isPending ? "Sending..." : "Send Invites"}
                                                 </button>
                                             </div>
-                                        </>
+                                        </div>
                                     )}
                                 </FieldArray>
 
-                                <p className="pt-3 text-center text-xs uppercase tracking- text-[#6667DD] p-semibold">
+                                <p className="pt-3 text-center text-xs uppercase tracking-wider text-[#6667DD] p-semibold shrink-0">
                                     Powered by Techxudo
                                 </p>
                             </Form>
                         );
                     }}
-
                 </Formik>
             </div>
         </div>

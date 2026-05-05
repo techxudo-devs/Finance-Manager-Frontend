@@ -386,9 +386,9 @@ const UsersInRecipients = () => {
             <AnimatePresence>
                 {isInviteModalOpen && (
                     <motion.div className="fixed inset-0 z-50 sm:px-0 px-4 flex items-center justify-center bg-black/50 backdrop-blur-sm" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                        <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="relative bg-blue-200/50 px-4 sm:px-8 pb-10 sm:pb-12 pt-4 sm:pt-6 rounded-2xl w-full max-w-xl">
-                            <button onClick={() => setIsInviteModalOpen(false)} className="absolute top-2 sm:top-3 right-3 text-white bg-gray-800/50 cursor-pointer transition-all duration-300 rounded-full p-1 hover:bg-gray-800/80 z-10">
-                                <X size={20} />
+                        <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="relative bg-blue-200/50 px-4 sm:px-8 pb-10 sm:pb-8 pt-4 sm:pt-6 rounded-2xl w-full max-w-xl">
+                            <button onClick={() => setIsInviteModalOpen(false)} className="absolute top-2 sm:top-2 right-2 text-white bg-gray-800/50 cursor-pointer transition-all duration-300 rounded-full p-1 hover:bg-gray-800/80 z-10">
+                                <X size={18} />
                             </button>
                             <AddUsers onInviteSuccess={() => setIsInviteModalOpen(false)} />
                         </motion.div>
